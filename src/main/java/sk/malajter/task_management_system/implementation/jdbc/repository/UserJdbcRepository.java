@@ -35,11 +35,14 @@ public class UserJdbcRepository {
 
     private static final String INSERT;
 
+    private static final String DELETE;
+
     static {
         logger = LoggerFactory.getLogger(UserJdbcRepository.class);
         GET_ALL = "SELECT * FROM user";
         GET_BY_ID = "SELECT * FROM user WHERE id = ?";
         INSERT = "INSERT INTO user(id, name, email) VALUES (next value for user_id_seq, ?, ?)";
+        DELETE = "DELETE FROM user WHERE id = ?";
     }
 
     public UserJdbcRepository(UserRowMapper userRowMapper, JdbcTemplate jdbcTemplate) {
@@ -68,6 +71,15 @@ public class UserJdbcRepository {
         } catch (DataAccessException e) {
             logger.error("Error while adding user.", e);
             throw new InternalErrorException("Error while adding user.");
+        }
+    }
+
+    public void delete(long id) {
+        try {
+            jdbcTemplate.update(DELETE, id);
+        } catch (DataAccessException e) {
+            logger.error("Error while deleting user.");
+            throw new InternalErrorException("Error while deleting user.");
         }
     }
 
