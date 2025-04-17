@@ -2,6 +2,8 @@ package sk.malajter.task_management_system.domain;
 
 import lombok.Value;
 
+import java.time.OffsetDateTime;
+
 @Value
 public class Project {
 
@@ -12,5 +14,7 @@ public class Project {
     String name;
 
     String description;
+
+    OffsetDateTime createdAt;
 
 }
