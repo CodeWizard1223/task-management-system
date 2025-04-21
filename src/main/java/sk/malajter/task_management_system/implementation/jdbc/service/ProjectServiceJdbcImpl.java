@@ -23,6 +23,26 @@ public class ProjectServiceJdbcImpl implements ProjectService {
     }
 
     @Override
+    public long add(ProjectAddRequest request) {
+        return projectJdbcRepository.add(request);
+    }
+
+    @Override
+    public void edit(long id, ProjectEditRequest request) {
+        if (this.get(id) != null) {
+            projectJdbcRepository.update(request);
+        }
+    }
+
+    @Override
+    public void delete(long id) {
+        if (this.get(id) != null) {
+            // TODO delete all tasks in this project
+            projectJdbcRepository.delete(id);
+        }
+    }
+
+    @Override
     public Project get(long id) {
         return projectJdbcRepository.getById(id);
     }
@@ -38,21 +58,7 @@ public class ProjectServiceJdbcImpl implements ProjectService {
             return projectJdbcRepository.getAllByUserId(userId);
         }
 
-        // It cannot happen because if condition above returns null, it throws exceptions anyway.
+        // It cannot happen because if the condition above returns null, it throws exceptions anyway.
         return null;
-    }
-
-    @Override
-    public void delete(long id) {
-    }
-
-    @Override
-    public long add(ProjectAddRequest request) {
-        return 0;
-    }
-
-    @Override
-    public void edit(long id, ProjectEditRequest request) {
-
     }
 }
