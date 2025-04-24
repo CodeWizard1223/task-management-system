@@ -48,7 +48,7 @@ public class ProjectJdbcRepository {
         GET_ALL = "SELECT * FROM project";
         GET_BY_ID = "SELECT * FROM project WHERE id = ?";
         GET_ALL_BY_USER = "SELECT * FROM project WHERE user_id = ?";
-        INSERT = "INSERT INTO project(id, user_id, name, description, created_at) VALUES (next value for project_id_seq, ?, ?, ?, ?";
+        INSERT = "INSERT INTO project(id, user_id, name, description, created_at) VALUES (next value for project_id_seq, ?, ?, ?, ?)";
         UPDATE = "UPDATE project SET name = ?, description = ? WHERE id = ?";
         DELETE = "DELETE FROM project WHERE id = ?";
     }
@@ -86,12 +86,12 @@ public class ProjectJdbcRepository {
         }
     }
 
-    public void update(ProjectEditRequest request) {
+    public void update(long id, ProjectEditRequest request) {
         try {
-            jdbcTemplate.update(UPDATE, request);
+            jdbcTemplate.update(UPDATE, request.getName(), request.getDescription(), id);
         } catch (DataAccessException e) {
-            logger.error("Error while updating project.", e);
-            throw new InternalErrorException("Error while updating project.");
+            logger.error("Error while updating project", e);
+            throw new InternalErrorException("Error while updating project");
         }
     }
 

@@ -30,7 +30,7 @@ public class ProjectServiceJdbcImpl implements ProjectService {
     @Override
     public void edit(long id, ProjectEditRequest request) {
         if (this.get(id) != null) {
-            projectJdbcRepository.update(request);
+            projectJdbcRepository.update(id, request);
         }
     }
 
