@@ -1,15 +1,29 @@
 package sk.malajter.task_management_system.implementation.jdbc.service;
 
+import sk.malajter.task_management_system.api.ProjectService;
 import sk.malajter.task_management_system.api.TaskService;
+import sk.malajter.task_management_system.api.UserService;
 import sk.malajter.task_management_system.api.request.TaskAddRequest;
 import sk.malajter.task_management_system.api.request.TaskEditRequest;
 import sk.malajter.task_management_system.domain.Task;
 import sk.malajter.task_management_system.domain.TaskStatus;
+import sk.malajter.task_management_system.implementation.jdbc.repository.TaskJdbcRepository;
 
 import java.util.List;
 
 public class TaskServiceJdbcImpl implements TaskService {
 
+    private final TaskJdbcRepository repository;
+
+    private final UserService userService;
+
+    private final ProjectService projectService;
+
+    public TaskServiceJdbcImpl(TaskJdbcRepository repository, UserService userService, ProjectService projectService) {
+        this.repository = repository;
+        this.userService = userService;
+        this.projectService = projectService;
+    }
 
     @Override
     public long add(TaskAddRequest request) {
@@ -37,22 +51,30 @@ public class TaskServiceJdbcImpl implements TaskService {
     }
 
     @Override
-    public Task get(long id) {
-        return null;
+    public Task get(long taskId) {
+        return repository.getById(taskId);
     }
 
     @Override
     public List<Task> getAll() {
-        return List.of();
+        return repository.getAll();
     }
 
     @Override
-    public List<Task> getAllByUserId(long userId) {
-        return List.of();
+    public List<Task> getAllByUser(long userId) {
+        if (userService.get(userId) != null) {
+            return repository.getAllByUserId(userId);
+        }
+
+        return null;
     }
 
     @Override
-    public List<Task> getAllByProjectId(long projectId) {
-        return List.of();
+    public List<Task> getAllByProject(long projectId) {
+        if (userService.get(projectId) != null) {
+            return repository.getAllByProject(projectId);
+        }
+
+        return null;
     }
 }

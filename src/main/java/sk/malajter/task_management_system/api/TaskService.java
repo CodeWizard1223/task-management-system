@@ -2,7 +2,6 @@ package sk.malajter.task_management_system.api;
 
 import sk.malajter.task_management_system.api.request.TaskAddRequest;
 import sk.malajter.task_management_system.api.request.TaskEditRequest;
-import sk.malajter.task_management_system.api.request.UserAddRequest;
 import sk.malajter.task_management_system.domain.Task;
 import sk.malajter.task_management_system.domain.TaskStatus;
 
@@ -24,7 +23,7 @@ public interface TaskService {
 
     List<Task> getAll();
 
-    List<Task> getAllByUserId(long userId);
+    List<Task> getAllByUser(long userId);
 
-    List<Task> getAllByProjectId(long projectId);
+    List<Task> getAllByProject(long projectId);
 }
