@@ -3,8 +3,10 @@ package sk.malajter.task_management_system.implementation.jdbc.service;
 import sk.malajter.task_management_system.api.ProjectService;
 import sk.malajter.task_management_system.api.TaskService;
 import sk.malajter.task_management_system.api.UserService;
+import sk.malajter.task_management_system.api.exception.BadRequestException;
 import sk.malajter.task_management_system.api.request.TaskAddRequest;
 import sk.malajter.task_management_system.api.request.TaskEditRequest;
+import sk.malajter.task_management_system.domain.Project;
 import sk.malajter.task_management_system.domain.Task;
 import sk.malajter.task_management_system.domain.TaskStatus;
 import sk.malajter.task_management_system.implementation.jdbc.repository.TaskJdbcRepository;
@@ -27,27 +29,41 @@ public class TaskServiceJdbcImpl implements TaskService {
 
     @Override
     public long add(TaskAddRequest request) {
-        return 0;
+        return repository.add(request);
     }
 
     @Override
-    public void edit(long id, TaskEditRequest request) {
-
+    public void edit(long taskId, TaskEditRequest request) {
+        if (this.get(taskId) != null) {
+            repository.update(taskId, request);
+        }
     }
 
     @Override
-    public void changeStatus(long id, TaskStatus status) {
-
+    public void changeStatus(long taskId, TaskStatus status) {
+        if (this.get(taskId) != null) {
+            repository.updateStatus(taskId, status);
+        }
     }
 
     @Override
     public void assignProject(long taskId, long projectId) {
+        final Task task = this.get(taskId);
+        final Project project = projectService.get(projectId);
 
+        if (task != null && project != null) {
+            if (task.getUserId() != project.getUserId()) {
+                throw new BadRequestException("Task and project must belong to the same user.");
+            }
+            repository.updateProject(taskId, projectId);
+        }
     }
 
     @Override
-    public void delete(long id) {
-
+    public void delete(long taskId) {
+        if (this.get(taskId) != null) {
+            repository.delete(taskId);
+        }
     }
 
     @Override
