@@ -6,6 +6,7 @@ import sk.malajter.task_management_system.api.request.ProjectAddRequest;
 import sk.malajter.task_management_system.api.request.ProjectEditRequest;
 import sk.malajter.task_management_system.domain.Project;
 import sk.malajter.task_management_system.implementation.jdbc.repository.ProjectJdbcRepository;
+import sk.malajter.task_management_system.implementation.jdbc.repository.TaskJdbcRepository;
 import sk.malajter.task_management_system.implementation.jdbc.repository.UserJdbcRepository;
 
 import java.util.List;
@@ -17,9 +18,12 @@ public class ProjectServiceJdbcImpl implements ProjectService {
 
     private final UserJdbcRepository userJdbcRepository;
 
-    public ProjectServiceJdbcImpl(ProjectJdbcRepository projectJdbcRepository, UserJdbcRepository userJdbcRepository) {
+    private final TaskJdbcRepository taskJdbcRepository;
+
+    public ProjectServiceJdbcImpl(ProjectJdbcRepository projectJdbcRepository, UserJdbcRepository userJdbcRepository, TaskJdbcRepository taskJdbcRepository) {
         this.projectJdbcRepository = projectJdbcRepository;
         this.userJdbcRepository = userJdbcRepository;
+        this.taskJdbcRepository = taskJdbcRepository;
     }
 
     @Override
@@ -37,7 +41,7 @@ public class ProjectServiceJdbcImpl implements ProjectService {
     @Override
     public void delete(long id) {
         if (this.get(id) != null) {
-            // TODO delete all tasks in this project
+            taskJdbcRepository.deleteAllByProject(id);
             projectJdbcRepository.delete(id);
         }
     }
