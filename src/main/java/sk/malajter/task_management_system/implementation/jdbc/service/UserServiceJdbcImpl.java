@@ -14,24 +14,22 @@ import java.util.List;
 public class UserServiceJdbcImpl implements UserService {
 
     private final UserJdbcRepository repository;
-
     private final ProjectJdbcRepository projectJdbcRepository;
-
     private final TaskJdbcRepository taskJdbcRepository;
 
-    public UserServiceJdbcImpl(UserJdbcRepository repository, ProjectJdbcRepository projectJdbcRepository, TaskJdbcRepository taskJdbcRepository) {
+    public UserServiceJdbcImpl(final UserJdbcRepository repository, final ProjectJdbcRepository projectJdbcRepository, final TaskJdbcRepository taskJdbcRepository) {
         this.repository = repository;
         this.projectJdbcRepository = projectJdbcRepository;
         this.taskJdbcRepository = taskJdbcRepository;
     }
 
     @Override
-    public long add(UserAddRequest request) {
+    public long add(final UserAddRequest request) {
         return repository.add(request);
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(final long id) {
         if (this.get(id) != null) {
             taskJdbcRepository.deleteAllByUser(id);
             projectJdbcRepository.deleteAllByUser(id);
@@ -40,7 +38,7 @@ public class UserServiceJdbcImpl implements UserService {
     }
 
     @Override
-    public User get(long id) {
+    public User get(final long id) {
         return repository.getById(id);
     }
 

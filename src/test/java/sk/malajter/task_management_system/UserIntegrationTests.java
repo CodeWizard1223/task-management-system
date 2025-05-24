@@ -17,16 +17,17 @@ public class UserIntegrationTests extends IntegrationTest {
 
     @Test
     public void getAll() {
-        final ResponseEntity<List<User>> userResponse = restTemplate.exchange(
+        final ResponseEntity<List<User>> users = restTemplate.exchange(
                 "/user",
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<>() {}
+                new ParameterizedTypeReference<>() {
+                }
         );
 
-        Assertions.assertEquals(HttpStatus.OK, userResponse.getStatusCode());
-        Assertions.assertNotNull(userResponse.getBody());
-        Assertions.assertTrue(userResponse.getBody().size() >= 2);
+        Assertions.assertEquals(HttpStatus.OK, users.getStatusCode());
+        Assertions.assertNotNull(users.getBody());
+        Assertions.assertTrue(users.getBody().size() >= 2);
     }
 
     @Test
@@ -38,7 +39,6 @@ public class UserIntegrationTests extends IntegrationTest {
     public void getUser() {
         final UserAddRequest addRequest = generateRandomUser();
         final long id = insertUser(addRequest);
-
         final ResponseEntity<User> user = restTemplate.getForEntity(
                 "/user/" + id,
                 User.class
@@ -46,7 +46,6 @@ public class UserIntegrationTests extends IntegrationTest {
 
         Assertions.assertEquals(HttpStatus.OK, user.getStatusCode());
         Assertions.assertNotNull(user.getBody());
-
         Assertions.assertEquals(id, user.getBody().getId());
         Assertions.assertEquals(addRequest.getName(), user.getBody().getName());
         Assertions.assertEquals(addRequest.getEmail(), user.getBody().getEmail());
@@ -54,10 +53,11 @@ public class UserIntegrationTests extends IntegrationTest {
 
     @Test
     public void deleteUser() {
-        final UserAddRequest request = generateRandomUser();
-        final long id = insertUser(request);
+        // create user
+        final UserAddRequest addRequest = generateRandomUser();
+        final long id = insertUser(addRequest);
 
-        // Delete user.
+        // delete user
         final ResponseEntity<Void> deleteResponse = restTemplate.exchange(
                 "/user/" + id,
                 HttpMethod.DELETE,
@@ -66,25 +66,39 @@ public class UserIntegrationTests extends IntegrationTest {
         );
         Assertions.assertEquals(HttpStatus.OK, deleteResponse.getStatusCode());
 
-        // Deleted user should not be found.
+        // deleted user should not exist
         final ResponseEntity<ResourceNotFoundException> getResponse = restTemplate.getForEntity(
                 "/user/" + id,
                 ResourceNotFoundException.class
         );
+
         Assertions.assertEquals(HttpStatus.NOT_FOUND, getResponse.getStatusCode());
     }
 
     @Test
     public void insertEmailAlreadyExists() {
-        final UserAddRequest request = generateRandomUser();
-        final long id = insertUser(request);
+        final UserAddRequest addRequest = generateRandomUser();
+        insertUser(addRequest);
 
         final ResponseEntity<BadRequestException> badRequest = restTemplate.postForEntity(
                 "/user",
-                request,
+                addRequest,
                 BadRequestException.class
         );
+
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, badRequest.getStatusCode());
+    }
+
+    private long insertUser(UserAddRequest request) {
+        final ResponseEntity<Long> user = restTemplate.postForEntity(
+                "/user",
+                request,
+                Long.class
+        );
+
+        Assertions.assertEquals(HttpStatus.CREATED, user.getStatusCode());
+        Assertions.assertNotNull(user.getBody());
+        return user.getBody();
     }
 
     private UserAddRequest generateRandomUser() {
@@ -92,18 +106,5 @@ public class UserIntegrationTests extends IntegrationTest {
                 "test" + Math.random(),
                 "email" + Math.random()
         );
-    }
-
-    private long insertUser(UserAddRequest request) {
-        final ResponseEntity<Long> insertResponse = restTemplate.postForEntity(
-                "/user",
-                request,
-                Long.class
-        );
-
-        Assertions.assertEquals(HttpStatus.CREATED, insertResponse.getStatusCode());
-        Assertions.assertNotNull(insertResponse.getBody());
-
-        return insertResponse.getBody();
     }
 }
