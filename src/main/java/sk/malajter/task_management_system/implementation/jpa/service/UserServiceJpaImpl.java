@@ -3,6 +3,7 @@ package sk.malajter.task_management_system.implementation.jpa.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import sk.malajter.task_management_system.implementation.jpa.repository.UserJpaR
 import java.util.List;
 
 @Service
-@Primary
+@Profile("jpa")
 public class UserServiceJpaImpl implements UserService {
 
     private final UserJpaRepository repository;

@@ -1,5 +1,6 @@
 package sk.malajter.task_management_system.implementation.jdbc.service;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import sk.malajter.task_management_system.api.UserService;
 import sk.malajter.task_management_system.api.request.UserAddRequest;
@@ -11,6 +12,7 @@ import sk.malajter.task_management_system.implementation.jdbc.repository.UserJdb
 import java.util.List;
 
 @Service
+@Profile("jdbc")
 public class UserServiceJdbcImpl implements UserService {
 
     private final UserJdbcRepository repository;

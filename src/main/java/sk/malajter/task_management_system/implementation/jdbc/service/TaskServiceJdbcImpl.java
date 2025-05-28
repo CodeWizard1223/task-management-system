@@ -1,6 +1,7 @@
 package sk.malajter.task_management_system.implementation.jdbc.service;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import sk.malajter.task_management_system.api.ProjectService;
 import sk.malajter.task_management_system.api.TaskService;
@@ -16,6 +17,7 @@ import sk.malajter.task_management_system.implementation.jdbc.repository.TaskJdb
 import java.util.List;
 
 @Service
+@Profile("jdbc")
 public class TaskServiceJdbcImpl implements TaskService {
 
     private final TaskJdbcRepository repository;
