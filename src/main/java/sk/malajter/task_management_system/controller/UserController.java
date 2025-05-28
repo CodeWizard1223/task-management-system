@@ -1,5 +1,7 @@
 package sk.malajter.task_management_system.controller;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,16 +28,31 @@ public class UserController {
     }
 
     @GetMapping("{id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User found"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<User> getById(@PathVariable("id") long id) {
         return ResponseEntity.ok().body(userService.get(id));
     }
 
     @PostMapping
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User created"),
+            @ApiResponse(responseCode = "400", description = "Bad request, email already exists"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<Long> add(@RequestBody UserAddRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.add(request));
     }
 
     @DeleteMapping("{id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User deleted"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<Void> delete(@PathVariable("id") long id) {
         userService.delete(id);
         return ResponseEntity.ok().build();
